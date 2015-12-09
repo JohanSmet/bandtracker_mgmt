@@ -4,13 +4,26 @@
         xmlns:app="clr-namespace:BandtrackerMgmt"
         Title="{Binding WindowTitle}" Height="350" Width="525">
     <Window.Resources>
-        <app:ViewModelMainWindow x:Key="ViewModel"/>
+        <ResourceDictionary>
+            <app:ViewModelMainWindow x:Key="ViewModel"/>
+        
+            <app:PageDataTemplateSelector x:Key="PageDataTemplateSelector"/>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PageBands.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
         <StaticResourceExtension ResourceKey="ViewModel"/>
     </Window.DataContext>
+    
+    <TabControl ItemsSource="{Binding Pages}" ContentTemplateSelector="{StaticResource PageDataTemplateSelector}">
+        <TabControl.ItemContainerStyle>
+            <Style TargetType="TabItem">
+                <Setter Property="Header" Value="{Binding .}"/>
+            </Style>
+        </TabControl.ItemContainerStyle>
+    </TabControl>
         
-    <Grid>
-        
-    </Grid>
 </Window>

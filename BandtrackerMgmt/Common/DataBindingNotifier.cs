@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace BandtrackerMgmt
 {
-    class DataBindingNotifier : INotifyPropertyChanged
+    public class DataBindingNotifier : INotifyPropertyChanged
     {
         internal void RaisePropertyChanged(string prop)
         {

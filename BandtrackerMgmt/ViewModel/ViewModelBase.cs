@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BandtrackerMgmt
 {
-    class ViewModelBase : DataBindingNotifier
+    public abstract class ViewModelBase : DataBindingNotifier
     {
+        abstract public void Initialize();
     }
 }

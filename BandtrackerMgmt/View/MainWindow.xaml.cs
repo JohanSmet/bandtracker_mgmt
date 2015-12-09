@@ -23,6 +23,26 @@ namespace BandtrackerMgmt
         public MainWindow()
         {
             InitializeComponent();
+            Model.Initialize();
+        }
+
+        // properties
+        protected ViewModelMainWindow Model { get { return (ViewModelMainWindow) Resources["ViewModel"]; } } 
+    }
+
+    public class PageDataTemplateSelector : DataTemplateSelector
+    {
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            FrameworkElement element = container as FrameworkElement;
+
+            if (item is string)
+            {
+                if (item.Equals(ViewModelBands.Id))
+                    return element.FindResource("TemplatePageBands") as DataTemplate;
+            }
+
+            return base.SelectTemplate(item, container);
         }
     }
 }
