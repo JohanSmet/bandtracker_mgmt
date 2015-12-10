@@ -29,10 +29,6 @@ namespace BandtrackerMgmt
         //
 
         private string                                  m_window_title  = "BandTracker Management";
-        private ObservableCollection<string>            m_pages = new ObservableCollection<string>
-        {
-            ViewModelBands.Id
-        };
-        
+        private ObservableCollection<string>            m_pages = new ObservableCollection<string>();
     }
 }
