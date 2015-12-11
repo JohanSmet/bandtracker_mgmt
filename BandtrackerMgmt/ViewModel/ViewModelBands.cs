@@ -17,6 +17,7 @@ namespace BandtrackerMgmt
 
         override public void Initialize()
         {
+            Refresh();
         }
 
         public void Refresh()
