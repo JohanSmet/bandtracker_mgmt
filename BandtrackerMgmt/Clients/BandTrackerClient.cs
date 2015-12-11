@@ -34,7 +34,19 @@ namespace BandtrackerMgmt
             return f_response.success;
         }
 
-    
+        // bands
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_sort = "name")
+        {
+            // configure request
+            var request = new RestRequest("/bands/list", Method.GET);
+            request.AddParameter("count", p_count);
+            request.AddParameter("skip",  p_skip);
+            request.AddParameter("sort",  p_sort);
+
+            // execute request
+            return await Execute<List<Band>>(request);
+        }
+
         // helper functions
         private async Task<T> Execute<T>(RestRequest request) where T : new()
         {
@@ -43,7 +55,7 @@ namespace BandtrackerMgmt
             client.BaseUrl = new System.Uri(BASE_URL);
 
             if (!String.IsNullOrEmpty(m_token))
-                request.AddParameter("x-auth_token", m_token, ParameterType.HttpHeader);
+                request.AddParameter("x-access-token", m_token, ParameterType.HttpHeader);
 
             // execute request
             var response = await client.ExecuteTaskAsync<T>(request);

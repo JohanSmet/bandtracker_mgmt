@@ -5,9 +5,25 @@
     <app:ViewModelBands x:Key="ViewModel"/>
 
     <DataTemplate x:Key="TemplatePageBands">
-        <StackPanel DataContext="{StaticResource ViewModel}">
-            <Label Content="{Binding PageTitle}"/>
-        </StackPanel>
+        <Grid DataContext="{StaticResource ViewModel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <WrapPanel Grid.Row="0">
+                <Button Content="Refresh" Command="{Binding CommandRefresh}"/>
+            </WrapPanel>
+
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>       
+        
+        
     </DataTemplate>
 
 </ResourceDictionary>

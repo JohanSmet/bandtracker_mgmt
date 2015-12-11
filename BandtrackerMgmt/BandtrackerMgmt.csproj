@@ -72,7 +72,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Clients\BandTrackerClient.cs" />
+    <Compile Include="Common\DataBindingCommand.cs" />
     <Compile Include="Model\Band.cs" />
+    <Compile Include="Model\DataCentral.cs" />
+    <Compile Include="Model\DataContext.cs" />
     <Compile Include="ViewModel\ViewModelBands.cs" />
     <Page Include="View\LoginDialog.xaml">
       <SubType>Designer</SubType>
