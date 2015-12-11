@@ -25,7 +25,7 @@ namespace BandtrackerMgmt
             InitializeComponent();
             Model.Initialize();
 
-            if (LoginDialog.Run())
+            if (BandTrackerClient.Instance.LoginTokenRestore() || LoginDialog.Run())
                 Model.Pages.Add(ViewModelBands.Id);
         }
 

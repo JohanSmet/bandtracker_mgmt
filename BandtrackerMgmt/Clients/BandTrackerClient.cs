@@ -14,6 +14,27 @@ namespace BandtrackerMgmt
         const string BASE_URL = "https://bandtracker-justcode.rhcloud.com/api";
 
         // login
+        public bool LoginTokenIsValid()
+        {
+            return !String.IsNullOrEmpty(m_token);
+        }
+
+        public bool LoginTokenRestore()
+        {
+            if (Properties.Settings.Default.BandTrackerTokenTime < DateTime.Now.AddDays(-1))
+                return false;
+
+            m_token = Properties.Settings.Default.BandTrackerToken;
+            return LoginTokenIsValid();
+        }
+
+        public void LoginTokenSave()
+        {
+            Properties.Settings.Default.BandTrackerToken     = m_token;
+            Properties.Settings.Default.BandTrackerTokenTime = DateTime.Now;
+            Properties.Settings.Default.Save();
+        }
+
         public async Task<bool> LoginAsync(string p_username, string p_password)
         {
             // configure request
@@ -29,7 +50,10 @@ namespace BandtrackerMgmt
             var f_response = await Execute<LoginResponse>(request);
 
             if (f_response.success)
+            {
                 m_token = f_response.token;
+                LoginTokenSave();
+            }
 
             return f_response.success;
         }
