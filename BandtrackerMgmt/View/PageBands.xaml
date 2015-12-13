@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:app="clr-namespace:BandtrackerMgmt"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="600">
+    
     <UserControl.Resources>
         <app:ViewModelBands x:Key="ViewModel"/>
     </UserControl.Resources>
@@ -15,11 +16,44 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <!-- filter -->
+        <Border Grid.Row="0" Background="#FFF7F4F4"/>
 
-        <WrapPanel Grid.Row="0">
-            <Button Content="Refresh" Command="{Binding CommandRefresh}"/>
-        </WrapPanel>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,4">
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" MinWidth="200"/>
+                </Grid.ColumnDefinitions>
+            
+                <Label Grid.Row="0" Grid.Column="0" Content="Filter"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,4" ItemsSource="{Binding FilterTypes}" SelectedItem="{Binding FilterCurrent}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Value}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
+                <Label Grid.Row="1" Grid.Column="0" Content="Name"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" Text="{Binding FilterName,  UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+            </Grid>
+            
+            <StackPanel MinWidth="180" Margin="8,0,0,0">
+                <Button Content="Refresh" Command="{Binding CommandRefresh}" Margin="0,4"/>
+                <UniformGrid>
+                    <Button Content="Previous" Command="{Binding CommandPrevious}" Margin="0,4,2,4"/>
+                    <Button Content="Next" Command="{Binding CommandNext}" Margin="2,4,0,4"/>
+                </UniformGrid>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- data -->
         <DataGrid Grid.Row="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding name}"/>

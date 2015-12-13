@@ -59,13 +59,19 @@ namespace BandtrackerMgmt
         }
 
         // bands
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_sort = "name")
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern = "",  bool p_no_bio = false, string p_sort = "name")
         {
             // configure request
             var request = new RestRequest("/bands/list", Method.GET);
             request.AddParameter("count", p_count);
             request.AddParameter("skip",  p_skip);
             request.AddParameter("sort",  p_sort);
+
+            if (!String.IsNullOrEmpty(p_name_pattern))
+                request.AddParameter("name", p_name_pattern);
+
+            if (p_no_bio)
+                request.AddParameter("nobio", 1);
 
             // execute request
             return await Execute<List<Band>>(request);
