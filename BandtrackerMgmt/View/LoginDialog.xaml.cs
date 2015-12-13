@@ -17,7 +17,7 @@ namespace BandtrackerMgmt
     /// <summary>
     /// Interaction logic for LoginDialog.xaml
     /// </summary>
-    public partial class LoginDialog : Window
+    public partial class LoginDialog : MahApps.Metro.Controls.MetroWindow
     {
         public static bool Run()
         {
