@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using RestSharp;
@@ -59,13 +60,12 @@ namespace BandtrackerMgmt
         }
 
         // bands
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern = "",  bool p_no_bio = false, string p_sort = "name")
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, CancellationToken cancelToken)
         {
             // configure request
             var request = new RestRequest("/bands/list", Method.GET);
             request.AddParameter("count", p_count);
             request.AddParameter("skip",  p_skip);
-            request.AddParameter("sort",  p_sort);
 
             if (!String.IsNullOrEmpty(p_name_pattern))
                 request.AddParameter("name", p_name_pattern);
@@ -77,8 +77,13 @@ namespace BandtrackerMgmt
             return await Execute<List<Band>>(request);
         }
 
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio)
+        {
+            return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, CancellationToken.None);
+        }
+
         // helper functions
-        private async Task<T> Execute<T>(RestRequest request) where T : new()
+        private async Task<T> Execute<T>(RestRequest request, CancellationToken cancelToken) where T : new()
         {
             // configure client
             var client = new RestClient();
@@ -88,7 +93,7 @@ namespace BandtrackerMgmt
                 request.AddParameter("x-access-token", m_token, ParameterType.HttpHeader);
 
             // execute request
-            var response = await client.ExecuteTaskAsync<T>(request);
+            var response = await client.ExecuteTaskAsync<T>(request, cancelToken);
 
             if (response.ErrorException != null)
             {
@@ -96,6 +101,11 @@ namespace BandtrackerMgmt
             }
 
             return response.Data;
+        }
+
+        private async Task<T> Execute<T>(RestRequest request) where T : new()
+        {
+            return await Execute<T>(request, CancellationToken.None);
         }
 
         private class LoginResponse

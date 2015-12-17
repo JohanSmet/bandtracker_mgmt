@@ -45,11 +45,8 @@
             </Grid>
             
             <StackPanel MinWidth="180" Margin="8,0,0,0">
-                <Button Content="Refresh" Command="{Binding CommandRefresh}" Margin="0,4"/>
-                <UniformGrid>
-                    <Button Content="Previous" Command="{Binding CommandPrevious}" Margin="0,4,2,4"/>
-                    <Button Content="Next" Command="{Binding CommandNext}" Margin="2,4,0,4"/>
-                </UniformGrid>
+                <Button Content="Refresh" Command="{Binding CommandRefresh}" Margin="0,4" Width="180"/>
+                <Button Content="Cancel"  Command="{Binding CommandCancel}"  Margin="0,4" Width="180"/>
             </StackPanel>
         </StackPanel>
         
@@ -57,6 +54,8 @@
         <DataGrid Grid.Row="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
+                <DataGridTextColumn Header="Source" Binding="{Binding source}"/>
+                <DataGridTextColumn Header="Biography" Binding="{Binding biography}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

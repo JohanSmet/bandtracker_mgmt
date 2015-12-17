@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BandtrackerMgmt
@@ -15,10 +16,8 @@ namespace BandtrackerMgmt
         public ViewModelBands()
         {
             m_cmd_refresh  = new SimpleCommand(Refresh);
-            m_cmd_next     = new SimpleCommand(Next);
-            m_cmd_previous = new SimpleCommand(Previous);
+            m_cmd_cancel   = new SimpleCommand(CancelRefresh, false);
 
-            m_skip = 0;
         }
 
         override public void Initialize()
@@ -34,30 +33,47 @@ namespace BandtrackerMgmt
         {
             var f_nobio = m_filter_current.Key == FilterType.ftBandsNoBio;
 
-            new Task(async () =>
+            ui_refresh_running(true);
+
+            var f_cancel_token = m_refresh_cancellation.Token;
+
+            Task.Run(async () =>
             {
-                var f_bands = BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, m_skip, m_filter_name, f_nobio);
                 DataCentral.Context.BandsClear();
-                DataCentral.Context.BandsMergeList(await f_bands);
-            }).Start();
+
+                // don't load everything at once
+                bool f_keep_running = true;
+                int f_skip = 0;
+
+                while (f_keep_running && !f_cancel_token.IsCancellationRequested)
+                {
+                    var f_bands = await BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, f_skip, m_filter_name, f_nobio, f_cancel_token);
+                    DataCentral.Context.BandsMergeList(f_bands);
+
+                    f_keep_running = f_bands.Count > 0;
+                    f_skip += BANDS_PER_PAGE;
+                }
+
+                // signal completion (on the main thread)
+                App.Current.Dispatcher.Invoke(() => { ui_refresh_running(false); });
+            }, f_cancel_token);
         }
 
-        public void Next()
+        public void CancelRefresh()
         {
-            if (Bands.Count >= BANDS_PER_PAGE)
-            {
-                m_skip += BANDS_PER_PAGE;
-                Refresh();
-            }
+            m_refresh_cancellation.Cancel();
         }
 
-        public void Previous()
+        // helper functions
+        private void ui_refresh_running(bool p_running)
         {
-            if (m_skip <= 0)
-                return;
+            m_cmd_refresh.CanExecute = !p_running;
+            m_cmd_cancel.CanExecute = p_running;
 
-            m_skip = Math.Max(0, m_skip - BANDS_PER_PAGE);
-            Refresh();
+            if (p_running)
+                m_refresh_cancellation = new CancellationTokenSource();
+            else
+                m_refresh_cancellation.Dispose();
         }
 
         // nested types
@@ -79,8 +95,7 @@ namespace BandtrackerMgmt
         public string                       FilterName     { get { return m_filter_name; }      set { if (SetField(ref m_filter_name, value)) Refresh(); } }
 
         public SimpleCommand CommandRefresh  { get { return m_cmd_refresh; } }
-        public SimpleCommand CommandNext     { get { return m_cmd_next; } }
-        public SimpleCommand CommandPrevious { get { return m_cmd_previous; } }
+        public SimpleCommand CommandCancel   { get { return m_cmd_cancel; } }
 
         // variables
         private string                m_page_title = "Bands";
@@ -93,10 +108,8 @@ namespace BandtrackerMgmt
         };
 
         private SimpleCommand   m_cmd_refresh;
-        private SimpleCommand   m_cmd_next;
-        private SimpleCommand   m_cmd_previous;
+        private SimpleCommand   m_cmd_cancel;
 
-        private int m_skip;
-
+        private CancellationTokenSource m_refresh_cancellation;
     }
 }
