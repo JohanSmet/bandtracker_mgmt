@@ -9,49 +9,55 @@
     
     <UserControl.Resources>
         <app:ViewModelBands x:Key="ViewModel"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
     
     <Grid DataContext="{StaticResource ViewModel}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         
         <!-- filter -->
-        <Border Grid.Row="0" Background="#FFF7F4F4"/>
+        <Border Grid.Column="0" Background="#FFF7F4F4"/>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,4">
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto" MinWidth="200"/>
-                </Grid.ColumnDefinitions>
-            
-                <Label Grid.Row="0" Grid.Column="0" Content="Filter"/>
-                <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,4" ItemsSource="{Binding FilterTypes}" SelectedItem="{Binding FilterCurrent}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <Label Content="{Binding Value}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="4,4">
+            <GroupBox Header="Filter">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto" MinWidth="200"/>
+                    </Grid.ColumnDefinitions>
+                
+                    <Label Grid.Row="0" Grid.Column="0" Content="Type"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,4" ItemsSource="{Binding FilterTypes}" SelectedItem="{Binding FilterCurrent}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Value}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Name"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" Text="{Binding FilterName,  UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
-            </Grid>
-            
-            <StackPanel MinWidth="180" Margin="8,0,0,0">
-                <Button Content="Refresh" Command="{Binding CommandRefresh}" Margin="0,4" Width="180"/>
-                <Button Content="Cancel"  Command="{Binding CommandCancel}"  Margin="0,4" Width="180"/>
-            </StackPanel>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Name"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" Text="{Binding FilterName,  UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+                </Grid>
+            </GroupBox>
+                
+            <GroupBox Header="Actions">
+                <StackPanel Margin="8,0">
+                    <Button Content="Refresh"         Command="{Binding CommandRefresh}" Visibility="{Binding CommandRefresh.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
+                    <Button Content="Cancel Refresh"  Command="{Binding CommandCancel}"  Visibility="{Binding CommandCancel.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
         
         <!-- data -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Column="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
                 <DataGridTextColumn Header="Source" Binding="{Binding source}"/>
