@@ -29,4 +29,24 @@ namespace BandtrackerMgmt
         // properties
         protected ViewModelBands Model { get { return (ViewModelBands) Resources["ViewModel"]; } } 
     }
+
+    public class HtmlFontConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is string)
+            {
+                return "<span style=\"font-size:10pt;\">" + (value as string) + "</span>";
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
