@@ -17,7 +17,6 @@ namespace BandtrackerMgmt
         {
             m_cmd_refresh  = new SimpleCommand(Refresh);
             m_cmd_cancel   = new SimpleCommand(CancelRefresh, false);
-
         }
 
         override public void Initialize()
@@ -83,7 +82,7 @@ namespace BandtrackerMgmt
             ftBandsNoBio
         };
 
-        const int BANDS_PER_PAGE = 50;
+        const int BANDS_PER_PAGE = 100;
 
         // properties
         public static string Id { get { return "Bands"; } }
