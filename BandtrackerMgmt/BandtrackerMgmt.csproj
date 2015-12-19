@@ -90,9 +90,14 @@
     <Compile Include="Model\Band.cs" />
     <Compile Include="Model\DataCentral.cs" />
     <Compile Include="Model\DataContext.cs" />
+    <Compile Include="Model\ServerTasks.cs" />
     <Compile Include="ViewModel\ViewModelBands.cs" />
+    <Compile Include="ViewModel\ViewModelTasks.cs" />
     <Compile Include="View\PageBands.xaml.cs">
       <DependentUpon>PageBands.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PageTasks.xaml.cs">
+      <DependentUpon>PageTasks.xaml</DependentUpon>
     </Compile>
     <Page Include="View\LoginDialog.xaml">
       <SubType>Designer</SubType>
@@ -117,6 +122,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\PageBands.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PageTasks.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

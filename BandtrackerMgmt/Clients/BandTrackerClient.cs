@@ -82,6 +82,22 @@ namespace BandtrackerMgmt
             return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, CancellationToken.None);
         }
 
+        // tasks
+        public async Task<List<ServerTask>> TaskList(string p_status, CancellationToken cancelToken)
+        {
+            // configure request
+            var request = new RestRequest("/task", Method.GET);
+            request.AddParameter("status", p_status);
+
+            // execute request
+            return await Execute<List<ServerTask>>(request);
+        }
+
+        public async Task<List<ServerTask>> TaskList(string p_status)
+        {
+            return await TaskList(p_status, CancellationToken.None);
+        }
+
         // helper functions
         private async Task<T> Execute<T>(RestRequest request, CancellationToken cancelToken) where T : new()
         {

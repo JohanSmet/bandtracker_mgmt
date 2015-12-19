@@ -18,6 +18,10 @@
             <app:PageBands/>
         </DataTemplate>
 
+        <DataTemplate x:Key="TemplatePageTasks">
+            <app:PageTasks/>
+        </DataTemplate>
+
         <app:PageDataTemplateSelector x:Key="PageDataTemplateSelector"/>
             
     </Window.Resources>

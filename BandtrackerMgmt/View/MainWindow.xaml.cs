@@ -26,7 +26,10 @@ namespace BandtrackerMgmt
             Model.Initialize();
 
             if (BandTrackerClient.Instance.LoginTokenRestore() || LoginDialog.Run())
+            {
                 Model.Pages.Add(ViewModelBands.Id);
+                Model.Pages.Add(ViewModelTasks.Id);
+            }
         }
 
         // properties
@@ -41,8 +44,7 @@ namespace BandtrackerMgmt
 
             if (item is string)
             {
-                if (item.Equals(ViewModelBands.Id))
-                    return element.FindResource("TemplatePageBands") as DataTemplate;
+                return element.FindResource("TemplatePage" + (item as string)) as DataTemplate;
             }
 
             return base.SelectTemplate(item, container);

@@ -11,6 +11,7 @@ namespace BandtrackerMgmt
         public DataContext()
         {
             BindingOperations.EnableCollectionSynchronization(m_bands, m_lock_bands);
+            BindingOperations.EnableCollectionSynchronization(m_tasks, m_lock_tasks);
         }
 
         // bands
@@ -31,11 +32,27 @@ namespace BandtrackerMgmt
             }
         }
 
+        // tasks
+        public void TasksSet(List<ServerTask> p_tasks)
+        {
+            lock (m_lock_tasks)
+            {
+                m_tasks.Clear();
+
+                foreach (var f_task in p_tasks)
+                    m_tasks.Add(f_task);
+            }
+        }
+
         // properties
-        public ObservableCollection<Band>   Bands { get { return m_bands; } }
+        public ObservableCollection<Band>       Bands { get { return m_bands; } }
+        public ObservableCollection<ServerTask> Tasks { get { return m_tasks; } }
 
         // variables
-        private ObservableCollection<Band>  m_bands = new ObservableCollection<Band>();
-        private object                      m_lock_bands = new object();
+        private ObservableCollection<Band>      m_bands = new ObservableCollection<Band>();
+        private object                          m_lock_bands = new object();
+
+        private ObservableCollection<ServerTask> m_tasks = new ObservableCollection<ServerTask>();
+        private object                           m_lock_tasks = new object();
     }
 }

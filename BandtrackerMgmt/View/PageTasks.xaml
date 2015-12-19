@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="BandtrackerMgmt.PageTasks"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:app="clr-namespace:BandtrackerMgmt"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.Resources>
+        <app:ViewModelTasks x:Key="ViewModel"/>
+        <app:StringArrayConverter x:Key="StringArray"/>
+        <app:TaskStatusConverter x:Key="TaskStatusBrush"/>
+    </UserControl.Resources>
+
+    <Grid DataContext="{StaticResource ViewModel}">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- filter -->
+        <Border Grid.Column="0" Background="#FFF7F4F4"/>
+
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="4,4" MinWidth="200">
+            <GroupBox Header="Actions">
+                <StackPanel Margin="8,0">
+                    <Button Content="Refresh"         Command="{Binding CommandRefresh}" Margin="0,4"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        
+        <!-- data -->
+        <DataGrid Grid.Column="1" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow"  BasedOn="{StaticResource MetroDataGridRow}">
+                    <Style.Triggers>
+                        <Trigger Property="DataGridRow.IsSelected" Value="False">
+                            <Setter Property="Background" Value="{Binding status, Converter={StaticResource TaskStatusBrush}}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID"         Binding="{Binding _id}"/>
+                <DataGridTextColumn Header="Type"       Binding="{Binding taskType}"/>
+                <DataGridTextColumn Header="Status"     Binding="{Binding status}"/>
+                <DataGridTextColumn Header="Created"    Binding="{Binding dateCreated}"/>
+                <DataGridTextColumn Header="Started"    Binding="{Binding dateStarted}"/>
+                <DataGridTextColumn Header="Finished"   Binding="{Binding dateExecuted}"/>
+                <DataGridTextColumn Header="Parameters" Binding="{Binding taskParams, Converter={StaticResource StringArray}}"/>
+            </DataGrid.Columns>
+            
+        </DataGrid>
+    </Grid>
+</UserControl>
