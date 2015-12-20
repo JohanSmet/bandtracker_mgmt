@@ -30,9 +30,9 @@ namespace BandtrackerMgmt
         {
             get
             {
-                if (dateStarted == null)
+                if (dateStarted == default(DateTime))
                     return Status.Open;
-                else if (dateExecuted == null)
+                else if (dateExecuted == default(DateTime))
                     return Status.Running;
                 else if (resultOk)
                     return Status.FinishedOk;
