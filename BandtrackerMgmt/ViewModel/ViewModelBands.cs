@@ -30,7 +30,8 @@ namespace BandtrackerMgmt
         // commands
         public void Refresh()
         {
-            var f_nobio = m_filter_current.Key == FilterType.ftBandsNoBio;
+            var f_nobio     = m_filter_current.Key == FilterType.ftBandsNoBio;
+            var f_nodiscogs = m_filter_current.Key == FilterType.ftBandsNoDiscogs;
 
             ui_refresh_running(true);
 
@@ -46,7 +47,7 @@ namespace BandtrackerMgmt
 
                 while (f_keep_running && !f_cancel_token.IsCancellationRequested)
                 {
-                    var f_bands = await BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, f_skip, m_filter_name, f_nobio, f_cancel_token);
+                    var f_bands = await BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, f_skip, m_filter_name, f_nobio, f_nodiscogs, f_cancel_token);
                     DataCentral.Context.BandsMergeList(f_bands);
 
                     f_keep_running = f_bands.Count > 0;
@@ -79,7 +80,8 @@ namespace BandtrackerMgmt
         public enum FilterType
         {
             ftBandsAll,
-            ftBandsNoBio
+            ftBandsNoBio,
+            ftBandsNoDiscogs
         };
 
         const int BANDS_PER_PAGE = 100;

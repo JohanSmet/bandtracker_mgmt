@@ -62,8 +62,9 @@
         <DataGrid Grid.Column="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="LightGray" GridLinesVisibility="Horizontal">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name"       Binding="{Binding name}"/>
-                <DataGridTextColumn Header="Source"     Binding="{Binding source}"/>
-                <DataGridTemplateColumn Width="*">
+                <DataGridTextColumn Header="DiscogsId"  Binding="{Binding discogsId}"/>
+                <DataGridTextColumn Header="Source"     Binding="{Binding bioSource}"/>
+                <DataGridTemplateColumn  Header="Biography" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <html:HtmlLabel Text="{Binding biography, Converter={StaticResource HtmlFont}}" AutoSizeHeightOnly="True"/>

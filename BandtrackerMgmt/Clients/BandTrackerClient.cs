@@ -60,7 +60,7 @@ namespace BandtrackerMgmt
         }
 
         // bands
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, CancellationToken cancelToken)
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, bool p_no_discogs, CancellationToken cancelToken)
         {
             // configure request
             var request = new RestRequest("/bands/list", Method.GET);
@@ -73,13 +73,16 @@ namespace BandtrackerMgmt
             if (p_no_bio)
                 request.AddParameter("nobio", 1);
 
+            if (p_no_discogs)
+                request.AddParameter("nodiscogs", 1);
+
             // execute request
             return await Execute<List<Band>>(request);
         }
 
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio)
+        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, bool p_no_discogs)
         {
-            return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, CancellationToken.None);
+            return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, p_no_discogs, CancellationToken.None);
         }
 
         // tasks
