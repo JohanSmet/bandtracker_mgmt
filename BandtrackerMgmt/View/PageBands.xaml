@@ -52,14 +52,15 @@
                 
             <GroupBox Header="Actions">
                 <StackPanel Margin="8,0">
-                    <Button Content="Refresh"         Command="{Binding CommandRefresh}" Visibility="{Binding CommandRefresh.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
-                    <Button Content="Cancel Refresh"  Command="{Binding CommandCancel}"  Visibility="{Binding CommandCancel.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
+                    <Button Content="Refresh"          Command="{Binding CommandRefresh}" Visibility="{Binding CommandRefresh.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
+                    <Button Content="Cancel Refresh"   Command="{Binding CommandCancel}"  Visibility="{Binding CommandCancel.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,4"/>
+                    <Button Content="MusicBrainz Urls" Command="{Binding CommandMusicBrainzUrl}" CommandParameter="{Binding SelectedItems, ElementName=grdBands}"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
         
         <!-- data -->
-        <DataGrid Grid.Column="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="LightGray" GridLinesVisibility="Horizontal">
+        <DataGrid x:Name="grdBands"  Grid.Column="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="LightGray" GridLinesVisibility="Horizontal">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name"       Binding="{Binding name}"/>
                 <DataGridTextColumn Header="DiscogsId"  Binding="{Binding discogsId}"/>

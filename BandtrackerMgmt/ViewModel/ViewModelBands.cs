@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,8 +16,9 @@ namespace BandtrackerMgmt
         // initalization
         public ViewModelBands()
         {
-            m_cmd_refresh  = new SimpleCommand(Refresh);
-            m_cmd_cancel   = new SimpleCommand(CancelRefresh, false);
+            m_cmd_refresh           = new SimpleCommand(Refresh);
+            m_cmd_cancel            = new SimpleCommand(CancelRefresh, false);
+            m_cmd_musicbrainz_url   = new ParamCommand<IList>(MusicBrainzUrl);
         }
 
         override public void Initialize()
@@ -64,6 +66,21 @@ namespace BandtrackerMgmt
             m_refresh_cancellation.Cancel();
         }
 
+        public void MusicBrainzUrl(IList p_selection)
+        {
+            // convert list of bands to list of band ids
+            var f_mbids = new List<string>();
+            foreach (Band f_band in p_selection)
+            {
+                f_mbids.Add(f_band.MBID);
+            }
+
+            Task.Run(async () =>
+            {
+                await BandTrackerClient.Instance.TaskCreateMusicBrainzUrl(f_mbids);
+            });
+        }
+
         // helper functions
         private void ui_refresh_running(bool p_running)
         {
@@ -95,8 +112,9 @@ namespace BandtrackerMgmt
         public FilterTypeEntry              FilterCurrent  { get { return m_filter_current; }   set { if (SetField(ref m_filter_current, value)) Refresh(); } }
         public string                       FilterName     { get { return m_filter_name; }      set { if (SetField(ref m_filter_name, value)) Refresh(); } }
 
-        public SimpleCommand CommandRefresh  { get { return m_cmd_refresh; } }
-        public SimpleCommand CommandCancel   { get { return m_cmd_cancel; } }
+        public SimpleCommand                CommandRefresh          { get { return m_cmd_refresh; } }
+        public SimpleCommand                CommandCancel           { get { return m_cmd_cancel; } }
+        public ParamCommand<IList>          CommandMusicBrainzUrl   { get { return m_cmd_musicbrainz_url; } }
 
         // variables
         private string                m_page_title = "Bands";
@@ -104,12 +122,14 @@ namespace BandtrackerMgmt
         private string                m_filter_name;
         private FilterTypeEntry       m_filter_current;
         private List<FilterTypeEntry> m_filter_types = new List<FilterTypeEntry> {
-            new FilterTypeEntry(FilterType.ftBandsAll,   "All Bands"),
-            new FilterTypeEntry(FilterType.ftBandsNoBio, "Bands without biography")
+            new FilterTypeEntry(FilterType.ftBandsAll,          "All Bands"),
+            new FilterTypeEntry(FilterType.ftBandsNoBio,        "Bands without biography"),
+            new FilterTypeEntry(FilterType.ftBandsNoDiscogs,    "Bands without discogsId")
         };
 
-        private SimpleCommand   m_cmd_refresh;
-        private SimpleCommand   m_cmd_cancel;
+        private SimpleCommand           m_cmd_refresh;
+        private SimpleCommand           m_cmd_cancel;
+        private ParamCommand<IList>     m_cmd_musicbrainz_url;
 
         private CancellationTokenSource m_refresh_cancellation;
     }

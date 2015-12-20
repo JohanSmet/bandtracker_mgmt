@@ -101,6 +101,19 @@ namespace BandtrackerMgmt
             return await TaskList(p_status, CancellationToken.None);
         }
 
+        public async Task<int> TaskCreateMusicBrainzUrl(List<string> p_mbids)
+        {
+            // configure request
+            var request = new RestRequest("/task/mb-urls", Method.POST);
+            request.RequestFormat = DataFormat.Json;
+            request.AddBody(new { bands = p_mbids });
+
+            // execute request
+            var f_response = await Execute<TaskResponse>(request);
+
+            return f_response.done;
+        }
+
         // helper functions
         private async Task<T> Execute<T>(RestRequest request, CancellationToken cancelToken) where T : new()
         {
@@ -127,11 +140,17 @@ namespace BandtrackerMgmt
             return await Execute<T>(request, CancellationToken.None);
         }
 
+        // nested classes
         private class LoginResponse
         {
             public bool   success   { get; set; }
             public string token     { get; set; }
             public string error     { get; set; }
+        }
+
+        private class TaskResponse
+        {
+            public int    done      { get; set; }
         }
 
         // variables
