@@ -85,6 +85,23 @@ namespace BandtrackerMgmt
             return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, p_no_discogs, CancellationToken.None);
         }
 
+        public async Task<int> BandUpdateStatus(List<string> p_mbids, Band.Status p_status)
+        {
+            // configure request
+            var request = new RestRequest("/bands/update-status", Method.POST);
+            request.RequestFormat = DataFormat.Json;
+            request.AddBody(new 
+            { 
+                status = p_status,
+                bands = p_mbids 
+            });
+
+            // execute request
+            var f_response = await Execute<TaskResponse>(request);
+
+            return f_response.done;
+        }
+
         // tasks
         public async Task<List<ServerTask>> TaskList(string p_status, CancellationToken cancelToken)
         {

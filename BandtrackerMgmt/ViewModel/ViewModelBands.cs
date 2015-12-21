@@ -19,6 +19,8 @@ namespace BandtrackerMgmt
             m_cmd_refresh           = new SimpleCommand(Refresh);
             m_cmd_cancel            = new SimpleCommand(CancelRefresh, false);
             m_cmd_musicbrainz_url   = new ParamCommand<IList>(MusicBrainzUrl);
+            m_cmd_band_release      = new ParamCommand<IList>(BandRelease);
+            m_cmd_band_revoke       = new ParamCommand<IList>(BandRevoke);
         }
 
         override public void Initialize()
@@ -68,16 +70,42 @@ namespace BandtrackerMgmt
 
         public void MusicBrainzUrl(IList p_selection)
         {
-            // convert list of bands to list of band ids
-            var f_mbids = new List<string>();
-            foreach (Band f_band in p_selection)
-            {
-                f_mbids.Add(f_band.MBID);
-            }
-
             Task.Run(async () =>
             {
-                await BandTrackerClient.Instance.TaskCreateMusicBrainzUrl(f_mbids);
+                await BandTrackerClient.Instance.TaskCreateMusicBrainzUrl(band_selection_mbid_list(p_selection));
+            });
+        }
+
+        public void BandRelease (IList p_selection)
+        {
+            Task.Run(async () =>
+            {
+                var f_server_update = BandTrackerClient.Instance.BandUpdateStatus(band_selection_mbid_list(p_selection), Band.Status.Released);
+
+                // update the local records as well
+                foreach (Band f_band in p_selection) 
+                {
+                    f_band.recordStatus = Band.Status.Released;
+                }
+
+                await f_server_update;
+            });
+
+        }
+
+        public void BandRevoke (IList p_selection)
+        {
+            Task.Run(async () =>
+            {
+                var f_server_update = BandTrackerClient.Instance.BandUpdateStatus(band_selection_mbid_list(p_selection), Band.Status.Revoked);
+
+                // update the local records as well
+                foreach (Band f_band in p_selection) 
+                {
+                    f_band.recordStatus = Band.Status.Revoked;
+                }
+
+                await f_server_update;
             });
         }
 
@@ -91,6 +119,18 @@ namespace BandtrackerMgmt
                 m_refresh_cancellation = new CancellationTokenSource();
             else
                 m_refresh_cancellation.Dispose();
+        }
+
+        private List<string> band_selection_mbid_list(IList p_bands)
+        {
+            var f_mbids = new List<string>();
+
+            foreach (Band f_band in p_bands)
+            {
+                f_mbids.Add(f_band.MBID);
+            }
+
+            return f_mbids;
         }
 
         // nested types
@@ -115,6 +155,8 @@ namespace BandtrackerMgmt
         public SimpleCommand                CommandRefresh          { get { return m_cmd_refresh; } }
         public SimpleCommand                CommandCancel           { get { return m_cmd_cancel; } }
         public ParamCommand<IList>          CommandMusicBrainzUrl   { get { return m_cmd_musicbrainz_url; } }
+        public ParamCommand<IList>          CommandBandRelease      { get { return m_cmd_band_release; } }
+        public ParamCommand<IList>          CommandBandRevoke       { get { return m_cmd_band_revoke; } }
 
         // variables
         private string                m_page_title = "Bands";
@@ -130,6 +172,8 @@ namespace BandtrackerMgmt
         private SimpleCommand           m_cmd_refresh;
         private SimpleCommand           m_cmd_cancel;
         private ParamCommand<IList>     m_cmd_musicbrainz_url;
+        private ParamCommand<IList>     m_cmd_band_release;
+        private ParamCommand<IList>     m_cmd_band_revoke;
 
         private CancellationTokenSource m_refresh_cancellation;
     }
