@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BandtrackerMgmt
 {
-    public class Band
+    public class Band : DataBindingNotifier
     {
           // nested types
         public enum Status
@@ -24,7 +24,10 @@ namespace BandtrackerMgmt
         public string imageUrl      { get; set; }
         public string biography     { get; set; }
         public string bioSource     { get; set; }
-        public Status   recordStatus  { get; set; }
+        public Status recordStatus  { get { return m_record_status; } set { SetField(ref m_record_status, value); } }
         public DateTime lastChanged { get; set; } 
+
+        // variables
+        private Status m_record_status;
     }
 }
