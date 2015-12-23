@@ -19,6 +19,7 @@ namespace BandtrackerMgmt
             m_cmd_refresh           = new SimpleCommand(Refresh);
             m_cmd_cancel            = new SimpleCommand(CancelRefresh, false);
             m_cmd_musicbrainz_url   = new ParamCommand<IList>(MusicBrainzUrl);
+            m_cmd_discogs_data      = new ParamCommand<IList>(DiscogsData);
             m_cmd_band_release      = new ParamCommand<IList>(BandRelease);
             m_cmd_band_revoke       = new ParamCommand<IList>(BandRevoke);
         }
@@ -109,6 +110,14 @@ namespace BandtrackerMgmt
             });
         }
 
+        public void DiscogsData (IList p_selection)
+        {
+            Task.Run(async () =>
+            {
+                await BandTrackerClient.Instance.TaskCreateDiscogsBandInfo(band_selection_mbid_list(p_selection));
+            });
+        }
+
         // helper functions
         private void ui_refresh_running(bool p_running)
         {
@@ -155,6 +164,7 @@ namespace BandtrackerMgmt
         public SimpleCommand                CommandRefresh          { get { return m_cmd_refresh; } }
         public SimpleCommand                CommandCancel           { get { return m_cmd_cancel; } }
         public ParamCommand<IList>          CommandMusicBrainzUrl   { get { return m_cmd_musicbrainz_url; } }
+        public ParamCommand<IList>          CommandDiscogsData      { get { return m_cmd_discogs_data; } }
         public ParamCommand<IList>          CommandBandRelease      { get { return m_cmd_band_release; } }
         public ParamCommand<IList>          CommandBandRevoke       { get { return m_cmd_band_revoke; } }
 
@@ -172,6 +182,7 @@ namespace BandtrackerMgmt
         private SimpleCommand           m_cmd_refresh;
         private SimpleCommand           m_cmd_cancel;
         private ParamCommand<IList>     m_cmd_musicbrainz_url;
+        private ParamCommand<IList>     m_cmd_discogs_data;
         private ParamCommand<IList>     m_cmd_band_release;
         private ParamCommand<IList>     m_cmd_band_revoke;
 

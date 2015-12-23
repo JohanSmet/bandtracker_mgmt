@@ -55,6 +55,7 @@
                     <Button Content="Refresh"          Command="{Binding CommandRefresh}" Visibility="{Binding CommandRefresh.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,2"/>
                     <Button Content="Cancel Refresh"   Command="{Binding CommandCancel}"  Visibility="{Binding CommandCancel.CanExecute, Converter={StaticResource BoolToVis}}" Margin="0,2"/>
                     <Button Content="MusicBrainz Urls" Command="{Binding CommandMusicBrainzUrl}" CommandParameter="{Binding SelectedItems, ElementName=grdBands}" Margin="0,2"/>
+                    <Button Content="Discogs Info"     Command="{Binding CommandDiscogsData}" CommandParameter="{Binding SelectedItems, ElementName=grdBands}" Margin="0,2"/>
                     <Button Content="Release Band"     Command="{Binding CommandBandRelease}"    CommandParameter="{Binding SelectedItems, ElementName=grdBands}" Margin="0,2"/>
                     <Button Content="Revoke Band"      Command="{Binding CommandBandRevoke}"     CommandParameter="{Binding SelectedItems, ElementName=grdBands}" Margin="0,2"/>
                 </StackPanel>

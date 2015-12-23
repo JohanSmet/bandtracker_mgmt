@@ -131,6 +131,19 @@ namespace BandtrackerMgmt
             return f_response.done;
         }
 
+        public async Task<int> TaskCreateDiscogsBandInfo(List<string> p_mbids)
+        {
+            // configure request
+            var request = new RestRequest("/task/discogs_band_info", Method.POST);
+            request.RequestFormat = DataFormat.Json;
+            request.AddBody(new { bands = p_mbids });
+
+            // execute request
+            var f_response = await Execute<TaskResponse>(request);
+
+            return f_response.done;
+        }
+
         // helper functions
         private async Task<T> Execute<T>(RestRequest request, CancellationToken cancelToken) where T : new()
         {
