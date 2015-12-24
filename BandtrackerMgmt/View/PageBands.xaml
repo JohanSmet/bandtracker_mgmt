@@ -20,10 +20,15 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
         <!-- filter -->
-        <Border Grid.Column="0" Background="#FFF7F4F4"/>
+        <Border Grid.Column="0" Grid.RowSpan="2" Background="#FFF7F4F4"/>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="4,4">
+        <StackPanel Grid.Column="0" Grid.RowSpan="2" Orientation="Vertical" Margin="4,4">
             <GroupBox Header="Filter">
                 
                 <Grid>
@@ -63,7 +68,9 @@
         </StackPanel>
         
         <!-- data -->
-        <DataGrid x:Name="grdBands"  Grid.Column="1" ItemsSource="{Binding Bands}" AutoGenerateColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="LightGray" GridLinesVisibility="Horizontal">
+        <DataGrid x:Name="grdBands"  Grid.Column="1" Grid.Row="0" 
+                  ItemsSource="{Binding Bands}" SelectedItem="{Binding SelectedBand}"
+                  AutoGenerateColumns="False" IsReadOnly="True" HorizontalGridLinesBrush="LightGray" GridLinesVisibility="Horizontal">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name"       Binding="{Binding name}"/>
                 <DataGridTextColumn Header="DiscogsId"  Binding="{Binding discogsId}"/>
@@ -78,6 +85,10 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Image Width="200" Height="200" Source="{Binding BandImage}"/>
+        </StackPanel>
     </Grid>
 
 </UserControl>

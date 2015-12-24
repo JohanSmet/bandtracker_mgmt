@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace BandtrackerMgmt
 {
@@ -130,6 +132,30 @@ namespace BandtrackerMgmt
                 m_refresh_cancellation.Dispose();
         }
 
+        private void ui_selected_band_changed()
+        {
+            App.Current.Dispatcher.Invoke(async () =>
+            {
+                var f_img_data = await BandTrackerClient.Instance.BandImage(m_selected_band.MBID);
+
+                var f_img = new BitmapImage();
+                f_img.BeginInit();
+                if (f_img_data != null) 
+                { 
+                    f_img.CacheOption = BitmapCacheOption.OnLoad;
+                    f_img.StreamSource = new MemoryStream(f_img_data);
+                }
+                else
+                {
+                    f_img.UriSource = new Uri("/Resources/no_image.png", UriKind.Relative);
+                }
+                f_img.EndInit();
+
+
+                BandImage = f_img;
+            });
+        }
+
         private List<string> band_selection_mbid_list(IList p_bands)
         {
             var f_mbids = new List<string>();
@@ -157,6 +183,8 @@ namespace BandtrackerMgmt
         public string PageTitle { get { return m_page_title; } set { SetField(ref m_page_title, value); } }
 
         public ObservableCollection<Band>   Bands          { get { return DataCentral.Context.Bands;  } }
+        public Band                         SelectedBand   { get { return m_selected_band; }    set { if (SetField(ref m_selected_band, value)) ui_selected_band_changed(); } }
+        public BitmapImage                  BandImage      { get { return m_band_image; }       set { SetField(ref m_band_image, value); } }
         public List<FilterTypeEntry>        FilterTypes    { get { return m_filter_types; } }
         public FilterTypeEntry              FilterCurrent  { get { return m_filter_current; }   set { if (SetField(ref m_filter_current, value)) Refresh(); } }
         public string                       FilterName     { get { return m_filter_name; }      set { if (SetField(ref m_filter_name, value)) Refresh(); } }
@@ -170,6 +198,8 @@ namespace BandtrackerMgmt
 
         // variables
         private string                m_page_title = "Bands";
+        private Band                  m_selected_band = null;
+        private BitmapImage           m_band_image = null;
 
         private string                m_filter_name;
         private FilterTypeEntry       m_filter_current;

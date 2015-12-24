@@ -102,6 +102,13 @@ namespace BandtrackerMgmt
             return f_response.done;
         }
 
+        // band images
+        public async Task<byte[]> BandImage(string p_mbids)
+        {
+            var request = new RestRequest("/bandImage/" + p_mbids, Method.GET);
+            return await ExecuteRaw(request);
+        }
+
         // tasks
         public async Task<List<ServerTask>> TaskList(string p_status, CancellationToken cancelToken)
         {
@@ -168,6 +175,24 @@ namespace BandtrackerMgmt
         private async Task<T> Execute<T>(RestRequest request) where T : new()
         {
             return await Execute<T>(request, CancellationToken.None);
+        }
+
+        private async Task<byte[]> ExecuteRaw(RestRequest request)
+        {
+            // configure client
+            var client = new RestClient();
+            client.BaseUrl = new System.Uri(BASE_URL);
+
+            if (!String.IsNullOrEmpty(m_token))
+                request.AddParameter("x-access-token", m_token, ParameterType.HttpHeader);
+
+            // execute request
+            var response = await client.ExecuteTaskAsync(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                return response.RawBytes;
+            else
+                return null;
         }
 
         // nested classes
