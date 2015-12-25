@@ -72,9 +72,13 @@ namespace BandtrackerMgmt
 
             if (p_conditions.withoutBiography)
                 request.AddParameter("nobio", 1);
+            else if (p_conditions.withBiography)
+                request.AddParameter("hasbio", 1);
 
             if (p_conditions.withoutDiscogsId)
                 request.AddParameter("nodiscogs", 1);
+            else if (p_conditions.withDiscogsId)
+                request.AddParameter("hasdiscogs", 1);
 
             if (p_conditions.recordStatus.HasValue)
                 request.AddParameter("status", p_conditions.recordStatus.Value);
@@ -203,7 +207,9 @@ namespace BandtrackerMgmt
         {
             public string  namePattern      = null;
             public bool    withoutBiography = false;
+            public bool    withBiography    = false;
             public bool    withoutDiscogsId = false;
+            public bool    withDiscogsId    = false;
             public int?    recordStatus     = null;
         }
 

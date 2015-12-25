@@ -50,6 +50,13 @@ namespace BandtrackerMgmt
             if (m_filter_status_current.Key != -100)
                 f_cond.recordStatus = m_filter_status_current.Key;
 
+            if (m_filter_current.Key == FilterType.ftBandsComplete)
+            {
+                f_cond.withBiography = true;
+                f_cond.withDiscogsId = true;
+                f_cond.namePattern   = ".+";
+            }
+
             // indicate refresh is starting
             ui_refresh_running(true);
 
@@ -183,6 +190,7 @@ namespace BandtrackerMgmt
         public enum FilterType
         {
             ftBandsAll,
+            ftBandsComplete,
             ftBandsNoBio,
             ftBandsNoDiscogs
         };
@@ -218,6 +226,7 @@ namespace BandtrackerMgmt
         private FilterTypeEntry       m_filter_current;
         private List<FilterTypeEntry> m_filter_types = new List<FilterTypeEntry> {
             new FilterTypeEntry(FilterType.ftBandsAll,          "All Bands"),
+            new FilterTypeEntry(FilterType.ftBandsComplete,     "Complete Bands"),
             new FilterTypeEntry(FilterType.ftBandsNoBio,        "Bands without biography"),
             new FilterTypeEntry(FilterType.ftBandsNoDiscogs,    "Bands without discogsId")
         };
