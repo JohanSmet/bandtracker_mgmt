@@ -94,6 +94,12 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Browser to MusicBrainz" Command="{Binding CommandBrowserMusicBrainz}"/>
+                    <MenuItem Header="Browser to Discogs" Command="{Binding CommandBrowserDiscogs}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
         
         <StackPanel Grid.Column="1" Grid.Row="1">

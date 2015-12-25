@@ -25,6 +25,9 @@ namespace BandtrackerMgmt
             m_cmd_discogs_data      = new ParamCommand<IList>(DiscogsData);
             m_cmd_band_release      = new ParamCommand<IList>(BandRelease);
             m_cmd_band_revoke       = new ParamCommand<IList>(BandRevoke);
+
+            m_cmd_browser_musicbrainz   = new SimpleCommand(BrowserMusicBrainz);
+            m_cmd_browser_discogs       = new SimpleCommand(BrowserDiscogs);
         }
 
         override public void Initialize()
@@ -138,6 +141,22 @@ namespace BandtrackerMgmt
             });
         }
 
+        public void BrowserMusicBrainz()
+        {
+            if (m_selected_band != null)
+            {
+                System.Diagnostics.Process.Start("https://musicbrainz.org/artist/" + m_selected_band.MBID);
+            }
+        }
+
+        public void BrowserDiscogs()
+        {
+            if (m_selected_band != null)
+            {
+                System.Diagnostics.Process.Start("http://www.discogs.com/artist/" + m_selected_band.discogsId);
+            }
+        }
+
         // helper functions
         private void ui_refresh_running(bool p_running)
         {
@@ -217,6 +236,9 @@ namespace BandtrackerMgmt
         public ParamCommand<IList>          CommandBandRelease      { get { return m_cmd_band_release; } }
         public ParamCommand<IList>          CommandBandRevoke       { get { return m_cmd_band_revoke; } }
 
+        public SimpleCommand                CommandBrowserMusicBrainz   { get { return m_cmd_browser_musicbrainz; } }
+        public SimpleCommand                CommandBrowserDiscogs       { get { return m_cmd_browser_discogs; } }
+
         // variables
         private string                m_page_title = "Bands";
         private Band                  m_selected_band = null;
@@ -244,6 +266,9 @@ namespace BandtrackerMgmt
         private ParamCommand<IList>     m_cmd_discogs_data;
         private ParamCommand<IList>     m_cmd_band_release;
         private ParamCommand<IList>     m_cmd_band_revoke;
+
+        private SimpleCommand           m_cmd_browser_musicbrainz;
+        private SimpleCommand           m_cmd_browser_discogs;
 
         private CancellationTokenSource m_refresh_cancellation;
     }
