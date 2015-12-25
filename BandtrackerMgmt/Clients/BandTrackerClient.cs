@@ -60,29 +60,32 @@ namespace BandtrackerMgmt
         }
 
         // bands
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, bool p_no_discogs, CancellationToken cancelToken)
+        public async Task<List<Band>> BandList(int p_count, int p_skip, BandListConditions p_conditions, CancellationToken cancelToken)
         {
             // configure request
             var request = new RestRequest("/bands/list", Method.GET);
             request.AddParameter("count", p_count);
             request.AddParameter("skip",  p_skip);
 
-            if (!String.IsNullOrEmpty(p_name_pattern))
-                request.AddParameter("name", p_name_pattern);
+            if (!String.IsNullOrEmpty(p_conditions.namePattern))
+                request.AddParameter("name", p_conditions.namePattern);
 
-            if (p_no_bio)
+            if (p_conditions.withoutBiography)
                 request.AddParameter("nobio", 1);
 
-            if (p_no_discogs)
+            if (p_conditions.withoutDiscogsId)
                 request.AddParameter("nodiscogs", 1);
+
+            if (p_conditions.recordStatus.HasValue)
+                request.AddParameter("status", p_conditions.recordStatus.Value);
 
             // execute request
             return await Execute<List<Band>>(request);
         }
 
-        public async Task<List<Band>> BandList(int p_count, int p_skip, string p_name_pattern, bool p_no_bio, bool p_no_discogs)
+        public async Task<List<Band>> BandList(int p_count, int p_skip, BandListConditions p_conditions)
         {
-            return await BandList(p_count, p_skip, p_name_pattern, p_no_bio, p_no_discogs, CancellationToken.None);
+            return await BandList(p_count, p_skip, p_conditions,  CancellationToken.None);
         }
 
         public async Task<int> BandUpdateStatus(List<string> p_mbids, Band.Status p_status)
@@ -196,6 +199,14 @@ namespace BandtrackerMgmt
         }
 
         // nested classes
+        public class BandListConditions 
+        {
+            public string  namePattern      = null;
+            public bool    withoutBiography = false;
+            public bool    withoutDiscogsId = false;
+            public int?    recordStatus     = null;
+        }
+
         private class LoginResponse
         {
             public bool   success   { get; set; }

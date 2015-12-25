@@ -11,7 +11,8 @@ using System.Windows.Media.Imaging;
 
 namespace BandtrackerMgmt
 {
-    using FilterTypeEntry = KeyValuePair<ViewModelBands.FilterType, string>;
+    using FilterTypeEntry   = KeyValuePair<ViewModelBands.FilterType, string>;
+    using FilterStatusEntry = KeyValuePair<int, string>;
 
     public class ViewModelBands : ViewModelBase
     {
@@ -28,7 +29,8 @@ namespace BandtrackerMgmt
 
         override public void Initialize()
         {
-            FilterCurrent = m_filter_types.FirstOrDefault();
+            FilterCurrent       = m_filter_types.FirstOrDefault();
+            FilterStatusCurrent = m_filter_status.FirstOrDefault();
 
             // load the initial filter
             Refresh();
@@ -37,9 +39,18 @@ namespace BandtrackerMgmt
         // commands
         public void Refresh()
         {
-            var f_nobio     = m_filter_current.Key == FilterType.ftBandsNoBio;
-            var f_nodiscogs = m_filter_current.Key == FilterType.ftBandsNoDiscogs;
+            // build condition object for band query
+            var f_cond = new BandTrackerClient.BandListConditions
+            {
+                namePattern      = !String.IsNullOrEmpty(m_filter_name) ? m_filter_name : null,
+                withoutBiography = m_filter_current.Key == FilterType.ftBandsNoBio,
+                withoutDiscogsId = m_filter_current.Key == FilterType.ftBandsNoDiscogs,
+            };
 
+            if (m_filter_status_current.Key != -100)
+                f_cond.recordStatus = m_filter_status_current.Key;
+
+            // indicate refresh is starting
             ui_refresh_running(true);
 
             var f_cancel_token = m_refresh_cancellation.Token;
@@ -54,7 +65,7 @@ namespace BandtrackerMgmt
 
                 while (f_keep_running && !f_cancel_token.IsCancellationRequested)
                 {
-                    var f_bands = await BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, f_skip, m_filter_name, f_nobio, f_nodiscogs, f_cancel_token);
+                    var f_bands = await BandTrackerClient.Instance.BandList(BANDS_PER_PAGE, f_skip, f_cond, f_cancel_token);
                     DataCentral.Context.BandsMergeList(f_bands);
 
                     f_keep_running = f_bands.Count > 0;
@@ -188,6 +199,8 @@ namespace BandtrackerMgmt
         public List<FilterTypeEntry>        FilterTypes    { get { return m_filter_types; } }
         public FilterTypeEntry              FilterCurrent  { get { return m_filter_current; }   set { if (SetField(ref m_filter_current, value)) Refresh(); } }
         public string                       FilterName     { get { return m_filter_name; }      set { if (SetField(ref m_filter_name, value)) Refresh(); } }
+        public List<FilterStatusEntry>      FilterStatus   { get { return m_filter_status; } }
+        public FilterStatusEntry            FilterStatusCurrent { get { return m_filter_status_current; }  set { if (SetField(ref m_filter_status_current, value)) Refresh(); } }
 
         public SimpleCommand                CommandRefresh          { get { return m_cmd_refresh; } }
         public SimpleCommand                CommandCancel           { get { return m_cmd_cancel; } }
@@ -207,6 +220,13 @@ namespace BandtrackerMgmt
             new FilterTypeEntry(FilterType.ftBandsAll,          "All Bands"),
             new FilterTypeEntry(FilterType.ftBandsNoBio,        "Bands without biography"),
             new FilterTypeEntry(FilterType.ftBandsNoDiscogs,    "Bands without discogsId")
+        };
+        private FilterStatusEntry       m_filter_status_current;
+        private List<FilterStatusEntry> m_filter_status = new List<FilterStatusEntry> {
+            new FilterStatusEntry(-100, "All bands"),
+            new FilterStatusEntry( 1, "Only released bands"),
+            new FilterStatusEntry( 0, "Only new bands"),
+            new FilterStatusEntry(-1, "Only revoked bands")
         };
 
         private SimpleCommand           m_cmd_refresh;

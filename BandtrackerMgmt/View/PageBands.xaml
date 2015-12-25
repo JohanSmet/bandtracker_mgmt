@@ -35,6 +35,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -49,9 +50,18 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    
+                    <Label Grid.Row="1" Grid.Column="0" Content="Status"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,4" ItemsSource="{Binding FilterStatus}" SelectedItem="{Binding FilterStatusCurrent}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Value}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="Name"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="0,4" Text="{Binding FilterName,  UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Name"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,4" Text="{Binding FilterName,  UpdateSourceTrigger=PropertyChanged, Delay=500}"/>
                 </Grid>
             </GroupBox>
                 
