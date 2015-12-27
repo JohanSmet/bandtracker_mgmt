@@ -28,6 +28,8 @@ namespace BandtrackerMgmt
 
             m_cmd_browser_musicbrainz   = new SimpleCommand(BrowserMusicBrainz);
             m_cmd_browser_discogs       = new SimpleCommand(BrowserDiscogs);
+
+            m_cmd_band_new              = new SimpleCommand(BandNew);
         }
 
         override public void Initialize()
@@ -157,6 +159,14 @@ namespace BandtrackerMgmt
             }
         }
 
+        public void BandNew()
+        {
+            Task.Run(async () =>
+            {
+                await BandTrackerClient.Instance.TaskCreateMusicBrainzUrl(new List<String> { m_band_new_mbid });
+            });
+        }
+
         // helper functions
         private void ui_refresh_running(bool p_running)
         {
@@ -239,6 +249,9 @@ namespace BandtrackerMgmt
         public SimpleCommand                CommandBrowserMusicBrainz   { get { return m_cmd_browser_musicbrainz; } }
         public SimpleCommand                CommandBrowserDiscogs       { get { return m_cmd_browser_discogs; } }
 
+        public string                       BandNewMBID             { get { return m_band_new_mbid; } set { SetField(ref m_band_new_mbid, value); } }
+        public SimpleCommand                CommandBandNew          { get { return m_cmd_band_new; } }
+
         // variables
         private string                m_page_title = "Bands";
         private Band                  m_selected_band = null;
@@ -269,6 +282,9 @@ namespace BandtrackerMgmt
 
         private SimpleCommand           m_cmd_browser_musicbrainz;
         private SimpleCommand           m_cmd_browser_discogs;
+
+        private string                  m_band_new_mbid;
+        private SimpleCommand           m_cmd_band_new;
 
         private CancellationTokenSource m_refresh_cancellation;
     }

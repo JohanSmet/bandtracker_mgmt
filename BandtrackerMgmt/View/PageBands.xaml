@@ -75,6 +75,25 @@
                     <Button Content="Revoke Band"      Command="{Binding CommandBandRevoke}"     CommandParameter="{Binding SelectedItems, ElementName=grdBands}" Margin="0,2"/>
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Add Band">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto" MinWidth="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Type"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="0,4" Text="{Binding BandNewMBID}"/>
+                    
+                    <Button Grid.Row="1" Grid.ColumnSpan="2" Content="Create"        Command="{Binding CommandBandNew}"/>
+                </Grid>
+
+            </GroupBox>
         </StackPanel>
         
         <!-- data -->
