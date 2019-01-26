@@ -12,7 +12,7 @@ namespace BandtrackerMgmt
     class BandTrackerClient
     {
         // constants
-        const string BASE_URL = "https://bandtracker-justcode.rhcloud.com/api";
+        const string BASE_URL = "http://ct-nodejs/api";
 
         // login
         public bool LoginTokenIsValid()
